@@ -14,8 +14,8 @@ class CreateQuestionVotesTable extends Migration
     public function up()
     {
         Schema::create('question_votes', function (Blueprint $table) {
-            $table->integer('question_id');
-            $table->integer('user_id');
+            $table->integer('question_id')->unsigned();
+            $table->integer('user_id')->unsigned();
             $table->integer('vote_type');
 
             $table->foreign('question_id')
