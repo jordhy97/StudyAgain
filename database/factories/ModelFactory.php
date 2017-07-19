@@ -18,7 +18,32 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
-        'password' => $password ?: $password = bcrypt('secret'),
-        'remember_token' => str_random(10),
+        'password' => $password ?: $password = bcrypt('password'),
+        'remember_token' => str_random(10)
+    ];
+});
+
+$factory->define(App\Question::class, function (Faker\Generator $faker) {
+    $time = $faker->dateTimeBetween('-2 years');
+    return [
+        'user_id' => null,
+        'title' => $faker->sentence,
+        'body' => $faker->paragraph(5),
+        'created_at' => $time,
+        'updated_at' => $time
+    ];
+});
+
+$factory->define(App\Answer::class, function (Faker\Generator $faker) {
+    return [
+        'user_id' => null,
+        'question_id' => null,
+        'body' => $faker->paragraph(5)
+    ];
+});
+
+$factory->define(App\Tag::class, function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->word
     ];
 });
