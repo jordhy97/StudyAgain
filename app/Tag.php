@@ -21,11 +21,6 @@ class Tag extends Model
     ];
 
     /**
-     * Disable timestamp.
-     */
-    public $timestamp = false;
-
-    /**
      * Get the questions that have this tag.
      */
     public function questions()

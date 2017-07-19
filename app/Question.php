@@ -69,8 +69,8 @@ class Question extends Model
     /**
      * Get the votes attribute of this question.
      */
-    public function getVotes() {
-        return $this->votes->sum('vote_type');
+    public function getVotesAttribute() {
+        return $this->votes()->sum('vote_type');
     }
 
     /**
