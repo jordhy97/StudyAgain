@@ -1,0 +1,59 @@
+<div class="col-sm-8 col-sm-offset-2">
+
+    <div class="alert alert-success" ng-if="home.ask">
+        Your question has been created.
+    </div>
+
+    <div class="alert alert-success" ng-if="home.questionDeleted">
+        Question has been deleted.
+    </div>
+
+    <h3><span style="float: left">Recently Asked Questions</span></h3>
+    <div class="text-right">
+        <a ui-sref="ask"><button class="btn btn-primary">Ask Question</button></a>
+    </div>
+    <hr>
+
+    <div class="loader text-center" ng-if="home.loading"></div>
+    <div class ="questions" ng-repeat="question in home.questions">
+        <div class="votes">
+            {{question.votes}}
+            <div>
+                votes
+            </div>
+        </div>
+        <div class="answers">
+            {{question.votes}}
+            <div>
+                answers
+            </div>
+        </div>
+        <div class="summary col-sm-offset-2">
+            <div class="question-title">
+                <a href="#!/questions/{{question.id}}">{{question.title}}</a>
+            </div>
+
+            <div class="question-content">
+                {{question.body}}
+            </div>
+
+            <div class="text-left">
+                <div class="tag" ng-repeat="tag in question.tags">
+                    <span class="glyphicon glyphicon-tag"></span> {{tag.name}}
+                </div>
+            </div>
+
+            <div class="question-detail">
+                asked by <span style="color:blue">{{question.author}}</span>
+                <time title="{{ question.created_at | amDateFormat: 'dddd, MMMM Do YYYY, h:mm a' }}" am-time-ago="question.created_at"> </time>
+                <span ng-if="main.isAuthorized" ng-controller="QuestionController as questions">
+                    | <a href="#!/questions/{{question.id}}/edit"><span style="color:darkorange"> edit</span> </a>|
+
+                     <a href="javascript:void(0)"> <span style="color:red" ng-click="questions.delete(question.id)">delete</span></a>
+                </span>
+            </div>
+        </div>
+        <hr>
+    </div>
+</div>
+

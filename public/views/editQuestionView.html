@@ -1,0 +1,23 @@
+<div class="col-sm-8 col-sm-offset-2">
+    {{question.test}}
+    <h3>Edit Your Question</h3>
+    <hr>
+
+    <form name="editForm">
+        <div ng-class="{'form-group' : true, 'has-success' : editForm.title.$valid, 'has-error' : editForm.title.$invalid && editForm.title.$touched}">
+            <label>Title:</label>
+            <input type="text" class="form-control" name="title" placeholder="What's your question?" ng-model="question.title" ng-minlength="15" ng-maxlength="150" required>
+            <p ng-show="editForm.title.$invalid && editForm.title.$touched" class="help-block">Title must be between 15 to 150 characters.</p>
+        </div>
+
+        <div ng-class="{'form-group' : true, 'has-success' : editForm.content.$valid, 'has-error' : editForm.content.$invalid && editForm.content.$touched}">
+            <label>Content:</label>
+            <textarea class="form-control noresize" rows="5" name="content" placeholder="Enter content" ng-model="question.content" required> </textarea>
+            <p ng-show="editForm.content.$invalid && editForm.content.$touched" class="help-block">Content is missing.</p>
+        </div>
+
+        <span style="float: right;"><button class="btn btn-primary"  ng-disabled="editForm.$invalid" ng-click="question.edit()">Edit Question</button> </span>
+        <div class="small-loader" ng-if="edit.loading"></div>
+    </form>
+
+</div>

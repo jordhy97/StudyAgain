@@ -1,0 +1,35 @@
+<div class="col-sm-6 col-sm-offset-3">
+    <div class="alert alert-danger" ng-if=auth.error>
+        {{auth.errorMessage}}
+    </div>
+    <div class="panel panel-primary">
+        <div class="panel-heading">Register</div>
+
+        <div class="panel-body">
+            <form name="registerForm">
+                <div ng-class="{'form-group' : true, 'has-success' : registerForm.name.$valid, 'has-error' : registerForm.name.$invalid && registerForm.name.$touched}">
+                    <label>Display Name:</label>
+                    <input type="text" class="form-control" name="name" placeholder="Enter display name" ng-model="auth.name" required>
+                    <p ng-show="registerForm.name.$invalid && registerForm.name.$touched" class="help-block">Display name is required.</p>
+                </div>
+
+                <div ng-class="{'form-group' : true, 'has-success' : registerForm.email.$valid, 'has-error' : registerForm.email.$invalid && registerForm.email.$touched}">
+                <label>Email address:</label>
+                    <input type="email" class="form-control" name="email" placeholder="Enter email" ng-model="auth.email" required>
+                    <p ng-show="registerForm.email.$invalid && registerForm.email.$touched" class="help-block">Enter a valid email.</p>
+                </div>
+
+                <div ng-class="{'form-group' : true, 'has-success' : registerForm.password.$valid, 'has-error' : registerForm.password.$invalid && registerForm.password.$touched}">
+                <label>Password:</label>
+                    <input type="password" class="form-control" name="password" placeholder="Enter password" ng-model="auth.password"  ng-minlength="6" required>
+                    <p ng-show="registerForm.password.$invalid && registerForm.password.$touched" class="help-block">Password is too short (minimum 6 characters).</p>
+                </div>
+
+                <span style="float: right;"><button class="btn btn-primary" ng-disabled="registerForm.$invalid" ng-click="auth.register() ">Register</button> </span>
+                <div class="small-loader" ng-if="auth.loading"></div>
+            </form>
+        </div>
+
+        <div class="panel-footer text-center"><a ui-sref="login">Already have an account?</a></div>
+    </div>
+</div>

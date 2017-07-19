@@ -1,0 +1,24 @@
+<div class="col-sm-8 col-sm-offset-2">
+
+    <h3>What's Your Question?</h3>
+    <hr>
+
+    <form name="askForm">
+        <div ng-class="{'form-group' : true, 'has-success' : askForm.title.$valid, 'has-error' : askForm.title.$invalid && askForm.title.$touched}">
+            <label>Title:</label>
+            <input type="text" class="form-control" name="title" placeholder="What's your question?" ng-model="ask.title" ng-minlength="15" ng-maxlength="150" required>
+            <p ng-show="askForm.title.$invalid && askForm.title.$touched" class="help-block">Title must be between 15 to 150 characters.</p>
+        </div>
+
+        <div ng-class="{'form-group' : true, 'has-success' : askForm.content.$valid, 'has-error' : askForm.content.$invalid && askForm.content.$touched}">
+            <label>Content:</label>
+            <textarea class="form-control noresize" rows="5" name="content" placeholder="Enter content" ng-model="ask.content" required> </textarea>
+            <p ng-show="askForm.content.$invalid && askForm.content.$touched" class="help-block">Content is missing.</p>
+        </div>
+
+        <span style="float: right;"><button class="btn btn-primary" ng-disabled="askForm.$invalid" ng-click="ask.ask()">Post Your Question</button> </span>
+        <div class="small-loader" ng-if="ask.loading"></div>
+    </form>
+
+</div>
+

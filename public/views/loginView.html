@@ -1,0 +1,37 @@
+<div class="col-sm-6 col-sm-offset-3">
+    <div class="alert alert-danger" ng-if=auth.error>
+        Invalid email address or password.
+    </div>
+
+    <div class="alert alert-danger" ng-if=auth.anonAsk>
+        You must be logged in to ask a question. Log in below.
+    </div>
+
+    <div class="alert alert-success" ng-if=auth.registered>
+        Registration Successful. You can login here.
+    </div>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">Log in</div>
+
+        <div class="panel-body">
+            <form name="loginForm">
+                <div ng-class="{'form-group' : true, 'has-success' : loginForm.email.$valid, 'has-error' : loginForm.email.$invalid && loginForm.email.$touched}">
+                <label>Email address:</label>
+                    <input type="email" class="form-control" name="email" placeholder="Enter email" ng-model="auth.email" required>
+                    <p ng-show="loginForm.email.$invalid && loginForm.email.$touched" class="help-block">Enter a valid email.</p>
+                </div>
+
+                <div ng-class="{'form-group' : true, 'has-success' : loginForm.password.$valid, 'has-error' : loginForm.password.$invalid && loginForm.password.$touched}">
+                    <label>Password:</label>
+                    <input type="password" class="form-control" name="password" placeholder="Enter password" ng-model="auth.password" required>
+                    <p ng-show="loginForm.password.$invalid && loginForm.password.$touched" class="help-block">Password is required.</p>
+                </div>
+
+                <span style="float: right;"><button class="btn btn-primary" ng-disabled="loginForm.$invalid" ng-click="auth.login()">Login</button> </span>
+                <div class="small-loader" ng-if=".loading"></div>
+            </form>
+        </div>
+        <div class="panel-footer text-center"><a ui-sref="register">Don't have an account?</a></div>
+    </div>
+</div>
