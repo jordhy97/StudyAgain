@@ -18,18 +18,18 @@ This application is built with Laravel 5.4 (back-end) and AngularJS (front-end).
 - Back-end:
     - [x] Create database schema (migration files). 
     - [x] Create database models.
-    - [ ] Create models' controller.
-    - [ ] Set API routes.
-    - [ ] Create database seeder.
+    - [x] Create models' controller.
+    - [x] Set API routes.
+    - [x] Create database seeder.
     - [ ] Create unit tests.
     
  - Front-end:
-    - [ ] Create main page. 
+    - [x] Create main page. 
     - [ ] Create search results page.
     - [ ] Create question page.
-    - [ ] Create login form.
-    - [ ] Create register form.
-    - [ ] Create ask a question form.
+    - [x] Create login form.
+    - [x] Create register form.
+    - [x] Create ask a question form.
     - [ ] Create answer question form.
-    - [ ] Create edit question form.
+    - [x] Create edit question form.
     - [ ] Create edit answer form.
