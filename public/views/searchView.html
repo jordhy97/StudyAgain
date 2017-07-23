@@ -1,21 +1,28 @@
 <div class="col-sm-8 col-sm-offset-2">
 
-    <div class="alert alert-success" ng-if="home.ask">
-        Your question has been created.
-    </div>
+    {{search.test}}
 
-    <div class="alert alert-success" ng-if="home.questionDeleted">
-        Question has been deleted.
-    </div>
+    <h3>Search</h3>
+    <form>
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search" ng-model="search.query">
+            <div class="input-group-btn">
+                <button class="btn btn-default" ng-click="main.search(search.query)">
+                    <i class="glyphicon glyphicon-search"></i>
+                </button>
+            </div>
+        </div>
+    </form>
 
-    <h3><span style="float: left">Recently Asked Questions</span></h3>
-    <div class="text-right">
-        <a ui-sref="ask"><button class="btn btn-primary">Ask Question</button></a>
-    </div>
-    <hr>
+    <h3 ng-if="search.query">
+        {{search.total}}
+        <span ng-if="search.total < 2"> result</span>
+        <span ng-if="search.total > 1"> results</span>
+        <hr>
+    </h3>
 
-    <div class="loader text-center" ng-if="home.loading"></div>
-    <div class ="questions" ng-repeat="question in home.questions">
+    <div class="loader text-center" ng-if="search.loading"></div>
+    <div class ="questions" ng-repeat="question in search.questions">
         <div class="votes">
             {{question.voteCounts}}
             <div>
@@ -45,7 +52,7 @@
             <div class="question-detail">
                 {{question.status}} by <span style="color:blue">{{question.author.name}}</span>
                 <time title="{{ question.updated_at | amDateFormat: 'dddd, MMMM Do YYYY, h:mm a' }}" am-time-ago="question.updated_at"> </time>
-                <span ng-if="main.isAuthorized && question.editable" ng-controller="QuestionController as questions">
+                <span ng-if="question.editable" ng-controller="QuestionController as questions">
                     | <a href="#!/questions/{{question.id}}/edit"><span style="color:darkorange"> edit</span> </a>|
 
                      <a href="javascript:void(0);"> <span style="color:red" ng-click="questions.delete(question.id)">delete</span></a>
@@ -56,12 +63,12 @@
     </div>
 
     <div class="container">
-        <ul class="pagination" ng-if="home.lastPage !== 1">
-            <li ng-if="!home.loading"><a href="#!/home?page=1">«</a></li>
-            <li ng-repeat="page in home.pages" ng-class="{'active' : page===home.currentPage}">
-                <a ng-href="#!/home?page={{page}}">{{page}}</a>
+        <ul class="pagination">
+            <li ng-if="!search.loading && search.currentPage"><a ng-href="#!/search?q={{search.query}}&page=1">«</a></li>
+            <li ng-repeat="page in search.pages" ng-class="{'active' : page===search.currentPage}">
+                <a ng-href="#!/search?q={{search.query}}&page={{page}}">{{page}}</a>
             </li>
-            <li ng-if="!home.loading"><a ng-href="#!/home?page={{home.lastPage}}">»</a></li>
+            <li ng-if="!search.loading && search.currentPage"><a ng-href="#!/search?q={{search.query}}&page={{search.lastPage}}">»</a></li>
         </ul>
     </div>
 

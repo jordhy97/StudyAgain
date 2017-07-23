@@ -1,21 +1,13 @@
 <div class="col-sm-8 col-sm-offset-2">
 
-    <div class="alert alert-success" ng-if="home.ask">
-        Your question has been created.
-    </div>
-
-    <div class="alert alert-success" ng-if="home.questionDeleted">
-        Question has been deleted.
-    </div>
-
-    <h3><span style="float: left">Recently Asked Questions</span></h3>
+    <h3><span style="float: left">Tagged Questions (Tag: {{taggedQuestions.tagName}})</span></h3>
     <div class="text-right">
         <a ui-sref="ask"><button class="btn btn-primary">Ask Question</button></a>
     </div>
     <hr>
 
-    <div class="loader text-center" ng-if="home.loading"></div>
-    <div class ="questions" ng-repeat="question in home.questions">
+    <div class="loader text-center" ng-if="taggedQuestions.loading"></div>
+    <div class ="questions" ng-repeat="question in taggedQuestions.questions">
         <div class="votes">
             {{question.voteCounts}}
             <div>
@@ -45,7 +37,7 @@
             <div class="question-detail">
                 {{question.status}} by <span style="color:blue">{{question.author.name}}</span>
                 <time title="{{ question.updated_at | amDateFormat: 'dddd, MMMM Do YYYY, h:mm a' }}" am-time-ago="question.updated_at"> </time>
-                <span ng-if="main.isAuthorized && question.editable" ng-controller="QuestionController as questions">
+                <span ng-if="question.editable" ng-controller="QuestionController as questions">
                     | <a href="#!/questions/{{question.id}}/edit"><span style="color:darkorange"> edit</span> </a>|
 
                      <a href="javascript:void(0);"> <span style="color:red" ng-click="questions.delete(question.id)">delete</span></a>
@@ -56,12 +48,12 @@
     </div>
 
     <div class="container">
-        <ul class="pagination" ng-if="home.lastPage !== 1">
-            <li ng-if="!home.loading"><a href="#!/home?page=1">«</a></li>
-            <li ng-repeat="page in home.pages" ng-class="{'active' : page===home.currentPage}">
-                <a ng-href="#!/home?page={{page}}">{{page}}</a>
+        <ul class="pagination" ng-if="taggedQuestions.lastPage !== 1">
+            <li ng-if="!taggedQuestions.loading && taggedQuestions.currentPage"><a ng-href="#!/questions/tagged/{{taggedQuestions.tagName}}?page=1">«</a></li>
+            <li ng-repeat="page in taggedQuestions.pages" ng-class="{'active' : page===taggedQuestions.currentPage}">
+                <a ng-href="#!/questions/tagged/{{taggedQuestions.tagName}}?page={{page}}">{{page}}</a>
             </li>
-            <li ng-if="!home.loading"><a ng-href="#!/home?page={{home.lastPage}}">»</a></li>
+            <li ng-if="!taggedQuestions.loading && taggedQuestions.currentPage"><a ng-href="#!/questions/tagged/{{taggedQuestions.tagName}}?page={{taggedQuestions.lastPage}}">»</a></li>
         </ul>
     </div>
 

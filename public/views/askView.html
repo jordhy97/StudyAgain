@@ -16,6 +16,12 @@
             <p ng-show="askForm.content.$invalid && askForm.content.$touched" class="help-block">Content is missing.</p>
         </div>
 
+        <div ng-class="{'form-group' : true, 'has-success' : askForm.tags.$valid, 'has-error' : askForm.tags.$invalid && askForm.tags.$touched}">
+            <label>Tags:</label>
+            <input type="text" class="form-control" name="tags" placeholder="Enter tags (max 5 tags, separate each tags with comma)" ng-model="ask.tags" ng-pattern="ask.pattern">
+            <p ng-show="askForm.tags.$invalid && askForm.tags.$touched" class="help-block">max 5 tags, separate each tags with comma.</p>
+        </div>
+
         <span style="float: right;"><button class="btn btn-primary" ng-disabled="askForm.$invalid" ng-click="ask.ask()">Post Your Question</button> </span>
         <div class="small-loader" ng-if="ask.loading"></div>
     </form>

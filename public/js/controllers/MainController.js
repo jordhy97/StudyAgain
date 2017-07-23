@@ -6,7 +6,7 @@
         .module("studyAgain")
         .controller('MainController', MainController);
 
-    function MainController($auth, $rootScope, $http) {
+    function MainController($auth, $rootScope, $http, $state) {
         var vm = this;
         vm.currentUser = null;
 
@@ -15,6 +15,10 @@
         });
 
         vm.isAuthorized = $auth.isAuthenticated();
+
+        vm.search = function(query) {
+            $state.go('search', {q : query});
+        };
 
         $rootScope.$on('userLoggedIn', function () {
             vm.isAuthorized = $auth.isAuthenticated();
@@ -27,6 +31,10 @@
 
         $rootScope.$on('userLoggedOut', function () {
             vm.isAuthorized = $auth.isAuthenticated();
+        });
+
+        $rootScope.$on('updateQuery', function (event, data) {
+            vm.query = data;
         });
     }
 })();

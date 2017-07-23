@@ -26,13 +26,13 @@
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
                 <li ui-sref-active="active"><a ui-sref="home">Home</a></li>
-                <li ui-sref-active="active"><a ui-sref="register">Tags</a></li>
+                <li ui-sref-active="active"><a ui-sref="tags">Tags</a></li>
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
                 <li ui-sref-active="active"><a ui-sref="register" ng-if="!main.isAuthorized"><span class="glyphicon glyphicon-user"></span> Register</a></li>
                 <li ui-sref-active="active"><a ui-sref="login" ng-if="!main.isAuthorized"><span class="glyphicon glyphicon-log-in"></span> Log In</a></li>
-                <li class="dropdown" ng-if="main.isAuthorized"><a class="dropdown-toggle" data-toggle="dropdown" href="javascript:void(0)">Hello, {{main.currentUser.name}}<span class="caret"></span></a>
+                <li class="dropdown" ng-if="main.isAuthorized"><a class="dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);">Hello, {{main.currentUser.name}}<span class="caret"></span></a>
                 <ul class="dropdown-menu">
                     <li><a href="#" ng-controller="AuthController as auth" ng-if="main.isAuthorized" ng-click="auth.logout()"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
                 </ul>
@@ -41,9 +41,9 @@
 
             <form class="navbar-form navbar-left">
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search">
+                    <input type="text" class="form-control" placeholder="Search" ng-model="main.query">
                     <div class="input-group-btn">
-                        <button class="btn btn-default" type="submit">
+                        <button class="btn btn-default" ng-click="main.search(main.query)">
                             <i class="glyphicon glyphicon-search"></i>
                         </button>
                     </div>
@@ -59,6 +59,13 @@
 
 </body>
 
+<footer class="footer">
+    <div class="container text-left">
+        <p>Study Again - Created by Jordhy Fernando</p>
+        <p>Contact information: <a href="mailto:jordhy.fernando@gmail.com">jordhy.fernando@gmail.com</a></p>
+    </div>
+</footer>
+
 <!-- Application Dependencies -->
 <script src="js/lib/angular.min.js"></script>
 <script src="js/lib/angular-ui-router.min.js"></script>
@@ -72,5 +79,8 @@
 <script src="js/controllers/HomeController.js"></script>
 <script src="js/controllers/AuthController.js"></script>
 <script src="js/controllers/QuestionController.js"></script>
+<script src="js/controllers/TaggedQuestionsController.js"></script>
+<script src="js/controllers/SearchController.js"></script>
+<script src="js/controllers/TagController.js"></script>
 
 </html>

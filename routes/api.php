@@ -24,9 +24,13 @@ Route::get('questions/{id}', 'QuestionController@show');
 Route::post('questions', 'QuestionController@store');
 Route::put('questions/{id}', 'QuestionController@update');
 Route::delete('questions/{id}', 'QuestionController@destroy');
+Route::get('questions/tagged/{tagName}', 'QuestionController@tagged');
 
 #Answer
 Route::post('questions/{id}/answers', 'AnswerController@store');
 Route::put('answers/{id}', 'AnswerController@update');
 Route::delete('answers/{id}', 'AnswerController@destroy');
 
+
+#Tag
+Route::get('tags', 'TagController@index');

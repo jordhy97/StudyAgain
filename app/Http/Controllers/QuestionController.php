@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Question;
 use App\Tag;
+use Carbon\Carbon;
 
 class QuestionController extends Controller
 {
@@ -16,7 +17,7 @@ class QuestionController extends Controller
     public function __construct()
     {
         $this->middleware('jwt.auth', ['only' => [
-            'store', 'update', 'destroy'
+            'store', 'update', 'destroy', 'upVote', 'downVote'
         ]]);
     }
 
@@ -24,9 +25,26 @@ class QuestionController extends Controller
      * Return all questions from newest to oldest.
      * @return Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Question::orderBy('created_at', 'desc')->get();
+        $search_term = $request->input('search');
+
+        if($search_term) {
+            $questions = Question::orderBy('updated_at', 'DESC')->where('body', 'LIKE', "%$search_term%")->
+            orWhere('title', 'LIKE', "%$search_term%")->paginate(15);
+        }
+        else {
+            $questions = Question::orderBy('updated_at', 'DESC')->paginate(15);
+        }
+        if (JWTAuth::getToken()) {
+            $user = JWTAuth::parseToken()->authenticate();
+            foreach($questions as $question) {
+                if ($question->author["id"] === $user->id) {
+                    $question['editable'] = true;
+                }
+            }
+        }
+        return $questions;
     }
 
     /**
@@ -36,7 +54,25 @@ class QuestionController extends Controller
      */
     public function show($id)
     {
-        return Question::findOrFail($id);
+        $question = Question::findOrFail($id);
+        if (JWTAuth::getToken()) {
+            $user = JWTAuth::parseToken()->authenticate();
+            if ($question->author["id"] === $user->id) {
+                $question['editable'] = true;
+            }
+            $vote_type = $question->votes()->select('vote_type')->where('id', $user->id)->get()->first();
+            $vote_type = $vote_type['vote_type'];
+            if ($vote_type === 1) {
+               $question['voteStatus'] = 'up';
+            }
+            else if ($vote_type === -1) {
+                $question['voteStatus'] = 'up';
+            }
+            else {
+                $question['voteStatus'] = 'none';
+            }
+        }
+        return $question;
     }
 
     /**
@@ -50,12 +86,17 @@ class QuestionController extends Controller
 
         $request['user_id'] = $user->id;
         $question =  Question::create($request->except('tags'));
-
-//        $tags = $request->only['tags'];
-//        if ($tags) {
-//            $tag_ids = Tag::select('id')->whereIn('name', explode(',', $tags['tags']))->get();
-//            $question->tags()->attach($tag_ids);
-//        }
+        $tags = $request->only('tags');
+        $tags = array_filter(explode(',', $tags['tags']));
+        if ($tags) {
+            foreach ($tags as $tag) {
+                $tag = trim($tag);
+                $tag_id = Tag::firstOrCreate(['name' => $tag])->id;
+                if (!$question->tags()->where('id', $tag_id)->exists()) {
+                    $question->tags()->attach($tag_id);
+                }
+            }
+        }
 
         return $question;
     }
@@ -69,13 +110,22 @@ class QuestionController extends Controller
     public function update($id, Request $request)
     {
         $question = Question::findOrFail($id);
-        $user = JWTAuth::parseToken()->authenticate();
-        if ($question->user_id !== $user->id) {
-            return response('Unauthorized — you cannot edit someone else\'s question', 401);
-        }
-
         $question->title = $request->title;
         $question->body = $request->body;
+        $question->tags()->detach();
+        $tags = $request->tags;
+        $tags = array_filter(explode(',', $tags));
+        if ($tags) {
+            foreach ($tags as $tag) {
+                $tag = trim($tag);
+                $tag_id = Tag::firstOrCreate(['name' => $tag])->id;
+                if (!$question->tags()->where('id', $tag_id)->exists()) {
+                    $question->tags()->attach($tag_id);
+                }
+            }
+        }
+
+        $question['updated_at'] = Carbon::now();
         $question->save();
 
         return response('Question updated', 200);
@@ -88,11 +138,6 @@ class QuestionController extends Controller
      */
     public function destroy($id) {
         $question = Question::findOrFail($id);
-        $user = JWTAuth::parseToken()->authenticate();
-        if ($question->user_id !== $user->id) {
-            return response('Unauthorized — you cannot delete someone else\'s question', 401);
-        }
-
         $question->delete();
 
         return response("Question deleted", 200);
@@ -106,11 +151,12 @@ class QuestionController extends Controller
     public function upVote($id) {
         $question = Question::findOrFail($id);
         $user = JWTAuth::parseToken()->authenticate();
-        $vote_type = $question->votes()->select('vote_type')->where('id', $user->id)->get();
-        if ($vote_type == 1) {
+        $vote_type = $question->votes()->select('vote_type')->where('id', $user->id)->get()->first();
+        $vote_type = $vote_type['vote_type'];
+        if ($vote_type === 1) {
             return response('Question already up voted', 200);
         }
-        if ($vote_type == -1) {
+        else if ($vote_type === -1) {
             $question->votes()->detach($user->id);
         }
         else {
@@ -127,16 +173,32 @@ class QuestionController extends Controller
     public function downVote($id) {
         $question = Question::findOrFail($id);
         $user = JWTAuth::parseToken()->authenticate();
-        $vote_type = $question->votes()->select('vote_type')->where('id', $user->id)->get();
-        if ($vote_type == 1) {
+        $vote_type = $question->votes()->select('vote_type')->where('id', $user->id)->get()->first();
+        $vote_type = $vote_type['vote_type'];
+        if ($vote_type === 1) {
             $question->votes()->detach($user->id);
         }
-        else if ($vote_type == -1) {
+        else if ($vote_type === -1) {
             return response('Question already down voted', 200);
         }
         else {
             $question->votes()->attach($user->id, ['vote_type' => -1]);
         }
-        return response('Question do voted', 200);
+        return response('Question down voted', 200);
+    }
+
+    /**
+     * Get all questions tagged with tagName.
+     * @param $tagName name of the tag.
+     * @return Response
+     */
+    public function tagged($tagName) {
+        $tag = Tag::where('name', $tagName)->get()->first();
+        if ($tag) {
+             return $tag->questions()->orderBy('updated_at', 'DESC')->paginate(15);
+        }
+        else {
+            return;
+        }
     }
 }
