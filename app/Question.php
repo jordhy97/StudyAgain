@@ -17,15 +17,15 @@ class Question extends Model
      * Additional attributes.
      */
     protected $appends = [
-        'author', 'votes', 'numberOfAnswers', 'answers', 'tags'
+        'author', 'status', 'voteCounts', 'answerCounts', 'answers', 'tags'
     ];
 
     /**
      * The attributes that are visible in the JSON response.
      */
     protected $visible = [
-        'id', 'title', 'body', 'author', 'created_at', 'updated_at', 'votes', 'numberOfAnswers',
-        'answers', 'tags'
+        'id', 'title', 'body', 'author', 'editable', 'status', 'updated_at', 'voteCounts', 'answerCounts',
+        'answers', 'tags', 'voteStatus'
     ];
 
     /**
@@ -63,20 +63,35 @@ class Question extends Model
      * Get the author attribute of this question.
      */
     public function getAuthorAttribute() {
-        return $this->user()->first()->name;
+        $author["id"] = $this->user()->first()->id;
+        $author["name"] = $this->user()->first()->name;
+        return $author;
     }
+
+    /**
+     * Get the status attribute of this question.
+     */
+    public function getStatusAttribute() {
+        if($this['created_at'] < $this['updated_at']) {
+            return "modified";
+        }
+        else {
+            return "asked";
+        }
+    }
+
 
     /**
      * Get the votes attribute of this question.
      */
-    public function getVotesAttribute() {
+    public function getVoteCountsAttribute() {
         return $this->votes()->sum('vote_type');
     }
 
     /**
      * Get the number of answers attribute of this question.
      */
-    public function getNumberOfAnswersAttribute() {
+    public function getAnswerCountsAttribute() {
         return $this->answers->count();
     }
 
