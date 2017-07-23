@@ -24,6 +24,8 @@ class CreateQuestionTagTable extends Migration
             $table->foreign('tag_id')
                 ->references('id')->on('tags')
                 ->onDelete('cascade');
+
+            $table->primary(['question_id', 'tag_id']);
         });
     }
 

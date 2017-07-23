@@ -44,6 +44,6 @@ $factory->define(App\Answer::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Tag::class, function (Faker\Generator $faker) {
     return [
-        'name' => $faker->word
+        'name' => $faker->unique()->word
     ];
 });
