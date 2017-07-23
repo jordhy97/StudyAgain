@@ -1,0 +1,35 @@
+<div class="col-sm-8 col-sm-offset-2">
+
+    <h3><span>Tags</span></h3>
+    <hr>
+
+    <form>
+        <label>Find tags</label>
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="" ng-model="tag.query">
+            <div class="input-group-btn">
+                <button class="btn btn-default" ng-click="tag.search()">
+                    <i class="glyphicon glyphicon-search"></i>
+                </button>
+            </div>
+        </div>
+    </form>
+    <br>
+
+    <div class="loader text-center" ng-if="tag.loading"></div>
+    <div class ="tag-view" ng-repeat="tag in tag.tags">
+        <a ng-href="#!/questions/tagged/{{tag.name}}"><span class="glyphicon glyphicon-tag"></span> {{tag.name}}</a> x {{tag.count}}
+    </div>
+
+    <div class="container" style="clear: both">
+        <ul class="pagination" ng-if="tag.lastPage > 1">
+            <li ng-if="!tag.loading"><a ng-href="#!/tags?{{tag.query ? 'q=' + tag.query + '&' : ''}}page=1">«</a></li>
+            <li ng-repeat="page in tag.pages" ng-class="{'active' : page===tag.currentPage}">
+                <a ng-href="#!/tags?{{tag.query ? 'q=' + tag.query + '&' : ''}}page={{page}}">{{page}}</a>
+            </li>
+            <li ng-if="!tag.loading"><a ng-href="#!/tags?{{tag.query ? 'q=' + tag.query + '&' : ''}}page={{tag.lastPage}}">»</a></li>
+        </ul>
+    </div>
+
+</div>
+

@@ -25,7 +25,9 @@ This application is built with Laravel 5.4 (back-end) and AngularJS (front-end).
     
  - Front-end:
     - [x] Create main page. 
-    - [ ] Create search results page.
+    - [x] Create search results page.
+    - [x] Create tagged question page.
+    - [x] Create tag page.
     - [ ] Create question page.
     - [x] Create login form.
     - [x] Create register form.

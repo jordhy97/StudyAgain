@@ -6862,9 +6862,15 @@ td.visible-print {
 
 .tag {
   float: left;
-  color: #6a737c;
   font-size: 12px;
   padding-right: 10px;
+}
+
+.tag-view {
+  float: left;
+  font-size: 14px;
+  padding-right: 20px;
+  padding-bottom: 25px;
 }
 
 .noresize {
