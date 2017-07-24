@@ -28,10 +28,10 @@ This application is built with Laravel 5.4 (back-end) and AngularJS (front-end).
     - [x] Create search results page.
     - [x] Create tagged question page.
     - [x] Create tag page.
-    - [ ] Create question page.
+    - [x] Create question page.
     - [x] Create login form.
     - [x] Create register form.
     - [x] Create ask a question form.
-    - [ ] Create answer question form.
+    - [x] Create answer question form.
     - [x] Create edit question form.
-    - [ ] Create edit answer form.
+    - [x] Create edit answer form.
