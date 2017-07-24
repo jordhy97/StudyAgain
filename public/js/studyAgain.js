@@ -38,7 +38,7 @@
                     controller: 'QuestionController as ask'
                 })
                 .state('questionsDetail', {
-                    url:'/questions/{questionId:[0-9]+}',
+                    url:'/questions/{questionId:[0-9]+}?page',
                     templateUrl: '../views/questionsDetailView.html',
                     controller: 'QuestionController as question'
                 })
@@ -61,6 +61,11 @@
                     url:'/tags?q&page',
                     templateUrl: '../views/tagView.html',
                     controller: 'TagController as tag'
+                })
+                .state('answerEdit', {
+                    url:'/questions/{questionId:[0-9]+}/answers/{answerId:[0-9]+}/edit',
+                    templateUrl: '../views/editAnswerView.html',
+                    controller: 'AnswerController as answer'
                 })
                 .state('404Error', {
                     url:'/pageNotFound',

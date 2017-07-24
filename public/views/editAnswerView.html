@@ -1,0 +1,18 @@
+<div class="col-sm-8 col-sm-offset-2">
+
+    <h3>Edit Your Answer</h3>
+    <hr>
+
+    <form name="editForm">
+
+
+        <div ng-class="{'form-group' : true, 'has-success' : editForm.content.$valid, 'has-error' : editForm.content.$invalid && editForm.content.$touched}">
+            <textarea class="form-control noresize" rows="5" name="content" placeholder="" ng-model="answer.content" required> </textarea>
+            <p ng-show="editForm.content.$invalid && editForm.content.$touched" class="help-block">Content is missing.</p>
+        </div>
+
+        <span style="float: right;"><button class="btn btn-primary"  ng-disabled="editForm.$invalid" ng-click="answer.edit()">Edit Answer</button> </span>
+        <div class="small-loader" ng-if="edit.loading"></div>
+    </form>
+
+</div>

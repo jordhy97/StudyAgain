@@ -15,8 +15,19 @@ class AnswerController extends Controller
     public function __construct()
     {
         $this->middleware('jwt.auth', ['only' => [
-            'store', 'update', 'destroy'
+            'store', 'update', 'destroy', 'upVote', 'downVote'
         ]]);
+    }
+
+    /**
+     * Show the specified answer, return 404 HTTP response if the question is not found.
+     * @param int $id id of the specified answer.
+     * @return Response
+     */
+    public function show($id)
+    {
+        $answer = Answer::findOrFail($id);
+        return $answer;
     }
 
     /**
@@ -31,7 +42,7 @@ class AnswerController extends Controller
 
         $request['user_id'] = $user->id;
         $request['question_id'] = $id;
-        $request['body'] = 'test';
+        $request['body'] = $request->body;
 
         return Answer::create($request->all());
     }
@@ -81,11 +92,12 @@ class AnswerController extends Controller
     public function upVote($id) {
         $answer = Answer::findOrFail($id);
         $user = JWTAuth::parseToken()->authenticate();
-        $vote_type = $answer->votes()->select('vote_type')->where('id', $user->id)->get();
-        if ($vote_type == 1) {
+        $vote_type = $answer->votes()->select('vote_type')->where('id', $user->id)->get()->first();
+        $vote_type = $vote_type['vote_type'];
+        if ($vote_type === 1) {
             return response('Answer already up voted', 200);
         }
-        if ($vote_type == -1) {
+        else if ($vote_type === -1) {
             $answer->votes()->detach($user->id);
         }
         else {
@@ -102,11 +114,12 @@ class AnswerController extends Controller
     public function downVote($id) {
         $answer = Answer::findOrFail($id);
         $user = JWTAuth::parseToken()->authenticate();
-        $vote_type = $answer->votes()->select('vote_type')->where('id', $user->id)->get();
-        if ($vote_type == 1) {
+        $vote_type = $answer->votes()->select('vote_type')->where('id', $user->id)->get()->first();
+        $vote_type = $vote_type['vote_type'];
+        if ($vote_type === 1) {
             $answer->votes()->detach($user->id);
         }
-        else if ($vote_type == -1) {
+        else if ($vote_type === -1) {
             return response('Answer already down voted', 200);
         }
         else {

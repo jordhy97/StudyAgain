@@ -82,5 +82,6 @@
 <script src="js/controllers/TaggedQuestionsController.js"></script>
 <script src="js/controllers/SearchController.js"></script>
 <script src="js/controllers/TagController.js"></script>
+<script src="js/controllers/AnswerController.js"></script>
 
 </html>

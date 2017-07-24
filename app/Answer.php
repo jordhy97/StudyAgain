@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class Answer extends Model
 {
@@ -17,14 +18,14 @@ class Answer extends Model
      * Additional attributes.
      */
     protected $appends = [
-        'author', 'votes'
+        'author', 'voteCounts', 'editable', 'status', 'voteStatus'
     ];
 
     /**
      * The attributes that are visible in the JSON response.
      */
     protected $visible = [
-        'id', 'body', 'author', 'votes', 'created_at', 'updated_at'
+        'id', 'body', 'author', 'voteCounts', 'updated_at', 'editable', 'status', 'voteStatus'
     ];
 
     /**
@@ -56,13 +57,60 @@ class Answer extends Model
      * Get the author attribute of this answer.
      */
     public function getAuthorAttribute() {
-        return $this->user()->first()->name;
+        $author["id"] = $this->user()->first()->id;
+        $author["name"] = $this->user()->first()->name;
+        return $author;
     }
 
     /**
      * Get the votes attribute of this question.
      */
-    public function getVotesAttribute() {
+    public function getVoteCountsAttribute() {
         return $this->votes()->sum('vote_type');
+    }
+
+    /**
+     * Get the editable attribute of this question.
+     */
+    public function getEditableAttribute() {
+        $val = false;
+        if (JWTAuth::getToken()) {
+            $user = JWTAuth::parseToken()->authenticate();
+            if ($this->user()->first()->id === $user->id) {
+                $val = true;
+            }
+        }
+        return $val;
+    }
+
+    /**
+     * Get the status attribute of this question.
+     */
+    public function getStatusAttribute() {
+        if($this['created_at'] < $this['updated_at']) {
+            return "modified";
+        }
+        else {
+            return "answered";
+        }
+    }
+
+    /**
+     * Get the vote status attribute of this question.
+     */
+    public function getVoteStatusAttribute() {
+        $val = "none";
+        if (JWTAuth::getToken()) {
+            $user = JWTAuth::parseToken()->authenticate();
+            $vote_type = $this->votes()->select('vote_type')->where('id', $user->id)->get()->first();
+            $vote_type = $vote_type['vote_type'];
+            if ($vote_type === 1) {
+                $val = 'up';
+            }
+            else if ($vote_type === -1) {
+                $val = 'down';
+            }
+        }
+        return $val;
     }
 }

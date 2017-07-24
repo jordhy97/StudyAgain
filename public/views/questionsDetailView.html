@@ -1,34 +1,97 @@
-<div class="question col-sm-8 col-sm-offset-2">
+<div class="loader text-center" ng-if="question.loading"></div>
+<div class="question col-sm-8 col-sm-offset-2" ng-if="!question.loading">
 
+    <div class="loader text-center" ng-if="question.loading"></div>
     <h3>{{question.title}}</h3>
     <hr>
 
     <div class="vote-counter">
-        <div class="glyphicon glyphicon-chevron-up"></div>
+        <a href="javascript:void(0);" ng-style="{ 'color' : (question.voteStatus == 'up') ? 'green' : '#6a737c' }" ng-click = "question.upVote()">
+            <div class="glyphicon glyphicon-chevron-up" title="This question is useful"></div>
+        </a>
         <div>
-            1
+            {{question.voteCounts}}
         </div>
-        <div class="glyphicon glyphicon-chevron-down"></div>
+        <a href="javascript:void(0);" ng-style="{ 'color' : (question.voteStatus == 'down') ? 'red' : '#6a737c' }" ng-click = "question.downVote()">
+            <div class="glyphicon glyphicon-chevron-down" title="This question is useless"></div>
+        </a>
     </div>
 
     <div class="col-sm-offset-1">
         {{question.content}}
         <div class="text-left">
             <div class="tag" ng-repeat="tag in question.tags">
-                <span class="glyphicon glyphicon-tag" ></span> {{tag.name}}
+                <a ng-href="#!/questions/tagged/{{tag.name}}"><span class="glyphicon glyphicon-tag"></span> {{tag.name}} </a>
             </div>
         </div>
         <div class="question-detail">
-            asked by <span style="color:blue">AUTHOR</span> time
-            <time title="{{ question.created_at | amDateFormat: 'dddd, MMMM Do YYYY, h:mm a' }}" am-time-ago="question.created_at"> </time>
-            <span ng-if="main.isAuthorized" ng-controller="QuestionController as questions">
+            {{question.status}} by <span style="color:blue">{{question.author.name}}</span>
+            <time title="{{ question.updated_at | amDateFormat: 'dddd, MMMM Do YYYY, h:mm a' }}" am-time-ago="question.updated_at"> </time>
+            <span ng-if="main.isAuthorized && question.editable">
             | <a href="#!/questions/{{question.id}}/edit"><span style="color:darkorange"> edit</span> </a>|
 
-            <a href="javascript:void(0);"> <span style="color:red" ng-click="questions.delete(question.id)">delete</span></a>
+            <a href="javascript:void(0);"> <span style="color:red" ng-click="question.delete(question.id)">delete</span></a>
         </span>
         </div>
     </div>
 
-    <h4 style="clear:both"><br>Count Answer(s)</h4>
+    <h4 style="clear:both"><br>{{question.answerCounts}} Answer<span ng-if="question.answerCounts > 1">s</span> </h4>
     <hr>
+
+    <div class="container">
+        <ul class="pagination" ng-if="question.lastPage > 1">
+            <li ng-if="!question.loading"><a href="#!/questions/{{question.id}}?page=1">«</a></li>
+            <li ng-repeat="page in question.pages" ng-class="{'active' : page===question.currentPage}">
+                <a ng-href="#!/questions/{{question.id}}?page={{page}}">{{page}}</a>
+            </li>
+            <li ng-if="!question.loading"><a ng-href="#!/questions/{{question.id}}?page={{question.lastPage}}">»</a></li>
+        </ul>
+    </div>
+
+    <div ng-controller="AnswerController as answerCtrl">
+        <div class="question-answers" ng-repeat="answer in question.answers">
+            <div class="vote-counter">
+                <a href="javascript:void(0);" ng-style="{ 'color' : (answer.voteStatus == 'up') ? 'green' : '#6a737c' }" ng-click = "answerCtrl.upVote(answer.id, answer.voteStatus)">
+                    <div class="glyphicon glyphicon-chevron-up" title="This answer is useful"></div>
+                </a>
+                <div>
+                    {{answer.voteCounts}}
+                </div>
+                <a href="javascript:void(0);" ng-style="{ 'color' : (answer.voteStatus == 'down') ? 'red' : '#6a737c' }" ng-click = "answerCtrl.downVote(answer.id, answer.voteStatus)">
+                    <div class="glyphicon glyphicon-chevron-down" title="This answer is useless"></div>
+                </a>
+            </div>
+
+            <div class="col-sm-offset-1">
+                {{answer.body}}
+                <div class="answer-detail">
+                    {{answer.status}} by <span style="color:blue">{{answer.author.name}}</span>
+                    <time title="{{ answer.updated_at | amDateFormat: 'dddd, MMMM Do YYYY, h:mm a' }}" am-time-ago="answer.updated_at"> </time>
+                    <span ng-if="main.isAuthorized && answer.editable">
+                        | <a href="#!/questions/{{question.id}}/answers/{{answer.id}}/edit"><span style="color:darkorange"> edit</span> </a>|
+                        <a href="javascript:void(0);"> <span style="color:red" ng-click="answerCtrl.delete(answer.id)">delete</span></a>
+                        </span>
+                </div>
+            </div>
+            <br style="clear: both">
+            <hr>
+        </div>
+    </div>
+
+    <div class="answer-form" ng-if="main.isAuthorized">
+        <h4>Your Answer</h4>
+        <form name="answerForm">
+            <div ng-class="{'form-group' : true, 'has-error' : answerForm.content.$invalid && answerForm.content.$touched}">
+                <textarea class="form-control noresize" rows="5" name="content" placeholder="" ng-model="question.answerContent" required> </textarea>
+                <p ng-show="answerForm.content.$invalid && answerForm.content.$touched" class="help-block">Answer is missing.</p>
+            </div>
+
+
+            <span style="float: right;"><button class="btn btn-primary" ng-disabled="answerForm.$invalid" ng-click="question.answer()">Post Your Answer</button> </span>
+        </form>
+    </div>
+
+    <div class="message" ng-if="!main.isAuthorized">
+        You have to <a ui-sref="login">log in</a> to post an answer or vote.
+    </div>
 </div>

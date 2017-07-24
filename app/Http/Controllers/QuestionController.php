@@ -66,7 +66,7 @@ class QuestionController extends Controller
                $question['voteStatus'] = 'up';
             }
             else if ($vote_type === -1) {
-                $question['voteStatus'] = 'up';
+                $question['voteStatus'] = 'down';
             }
             else {
                 $question['voteStatus'] = 'none';
@@ -110,6 +110,11 @@ class QuestionController extends Controller
     public function update($id, Request $request)
     {
         $question = Question::findOrFail($id);
+        $user = JWTAuth::parseToken()->authenticate();
+        if ($question->user_id !== $user->id) {
+            return response('Unauthorized — you cannot edit someone else\'s question', 401);
+        }
+
         $question->title = $request->title;
         $question->body = $request->body;
         $question->tags()->detach();
@@ -138,6 +143,11 @@ class QuestionController extends Controller
      */
     public function destroy($id) {
         $question = Question::findOrFail($id);
+        $user = JWTAuth::parseToken()->authenticate();
+        if ($question->user_id !== $user->id) {
+            return response('Unauthorized — you cannot delete someone else\'s question', 401);
+        }
+
         $question->delete();
 
         return response("Question deleted", 200);

@@ -92,14 +92,14 @@ class Question extends Model
      * Get the number of answers attribute of this question.
      */
     public function getAnswerCountsAttribute() {
-        return $this->answers->count();
+        return $this->answers()->count();
     }
 
     /**
      * Get the answers attribute of this question.
      */
     public function getAnswersAttribute() {
-        return $this->answers()->get();
+        return $this->answers()->paginate(15);
     }
 
     /**

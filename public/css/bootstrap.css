@@ -50,7 +50,7 @@ html {
 
 body {
   margin: 0;
-  margin-bottom: 60px;
+  margin-bottom: 80px;
 }
 
 a:focus {
@@ -6854,7 +6854,7 @@ td.visible-print {
   text-overflow: ellipsis;
 }
 
-.question-detail {
+.question-detail, .answer-detail {
   color: #6a737c;
   font-size: 12px;
   text-align: right;

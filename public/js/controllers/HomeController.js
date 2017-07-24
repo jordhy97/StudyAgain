@@ -21,7 +21,7 @@
             $http.get('/api/questions?page=' + $stateParams.page).then(function (response) {
                 vm.currentPage = response.data.current_page;
                 vm.lastPage = response.data.last_page;
-                if (vm.currentPage > vm.lastPage) {
+                if (vm.currentPage > vm.lastPage && vm.lastPage !== 0) {
                     $state.go('404Error', {});
                 }
                 else {
