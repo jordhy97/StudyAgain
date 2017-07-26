@@ -35,3 +35,21 @@ This application is built with Laravel 5.4 (back-end) and AngularJS (front-end).
     - [x] Create answer question form.
     - [x] Create edit question form.
     - [x] Create edit answer form.
+    
+## Screenshots
+
+<p align="center">
+ <img src="screenshots/home_guest.png" width = "700" alt ="Home"/>
+ <img src="screenshots/register.png" width = "700" alt ="Register"/>
+ <img src="screenshots/login.png" width = "700" alt ="Login"/>
+ <img src="screenshots/home_logged_in.png" width = "700" alt ="Home-Logged-In"/>
+ <img src="screenshots/search_questions.png" width = "700" alt ="Search questions"/>
+ <img src="screenshots/tagged_questions.png" width = "700" alt ="Tagged Question"/>
+ <img src="screenshots/tags.png" width = "700" alt ="Tags"/>
+ <img src="screenshots/tags_search.png" width = "700" alt ="Search tags"/>
+ <img src="screenshots/ask.png" width = "700" alt ="Ask"/>
+ <img src="screenshots/question_detail_guest.png" width = "700" alt ="Question detail as guest"/> 
+ <img src="screenshots/question_detail_logged_in.png" width = "700" alt ="Question detail logged in"/> 
+ <img src="screenshots/edit_question.png" width = "700" alt ="Edit question"/> 
+ <img src="screenshots/edit_answer.png" width = "700" alt ="Edit answer"/> 
+</p>
