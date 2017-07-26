@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -22,7 +23,7 @@ class QuestionController extends Controller
     }
 
     /**
-     * Return all questions from newest to oldest.
+     * Return all questions or questions that matched the given search query (if there is a query) from newest to oldest.
      * @return Response
      */
     public function index(Request $request)
@@ -54,7 +55,13 @@ class QuestionController extends Controller
      */
     public function show($id)
     {
-        $question = Question::findOrFail($id);
+        try {
+            $question = Question::findOrFail($id);
+        }
+        catch (ModelNotFoundException $e) {
+            return response()->json(['error' =>'question not found'], 404);
+        }
+
         if (JWTAuth::getToken()) {
             $user = JWTAuth::parseToken()->authenticate();
             if ($question->author["id"] === $user->id) {
@@ -102,17 +109,24 @@ class QuestionController extends Controller
     }
 
     /**
-     * Update the specified question, return 401 HTTP response if unauthorized.
+     * Update the specified question, return 401 HTTP response if unauthorized, or 404 HTTP response if the question
+     * is not found.
      * @param int $id id of the specified question.
      * @param Request $request sent request.
      * @return Response
      */
     public function update($id, Request $request)
     {
-        $question = Question::findOrFail($id);
+        try {
+            $question = Question::findOrFail($id);
+        }
+        catch (ModelNotFoundException $e) {
+            return response()->json(['error' =>'question not found'], 404);
+        }
+
         $user = JWTAuth::parseToken()->authenticate();
         if ($question->user_id !== $user->id) {
-            return response('Unauthorized — you cannot edit someone else\'s question', 401);
+            return response()->josn(['error' => 'Unauthorized — you cannot edit someone else\'s question'], 401);
         }
 
         $question->title = $request->title;
@@ -133,16 +147,22 @@ class QuestionController extends Controller
         $question['updated_at'] = Carbon::now();
         $question->save();
 
-        return response('Question updated', 200);
+        return $question;
     }
 
     /**
-     * Delete the specified question, return 401 HTTP response if unauthorized.
+     * Delete the specified question, return 401 HTTP response if unauthorized, or 404 HTTP response if the question
+     * is not found.
      * @param int $id id of the specified question.
      * @return Response
      */
     public function destroy($id) {
-        $question = Question::findOrFail($id);
+        try {
+            $question = Question::findOrFail($id);
+        }
+        catch (ModelNotFoundException $e) {
+            return response()->json(['error' =>'question not found'], 404);
+        }
         $user = JWTAuth::parseToken()->authenticate();
         if ($question->user_id !== $user->id) {
             return response('Unauthorized — you cannot delete someone else\'s question', 401);
@@ -150,21 +170,26 @@ class QuestionController extends Controller
 
         $question->delete();
 
-        return response("Question deleted", 200);
+        return response()->json(['message' => 'Question deleted'], 200);
     }
 
     /**
-     * Up vote the specified question.
+     * Up vote the specified question, return 404 HTTP response if the question is not found.
      * @param int $id id of the specified question.
      * @return Response
      */
     public function upVote($id) {
-        $question = Question::findOrFail($id);
+        try {
+            $question = Question::findOrFail($id);
+        }
+        catch (ModelNotFoundException $e) {
+            return response()->json(['error' =>'question not found'], 404);
+        }
         $user = JWTAuth::parseToken()->authenticate();
         $vote_type = $question->votes()->select('vote_type')->where('id', $user->id)->get()->first();
         $vote_type = $vote_type['vote_type'];
         if ($vote_type === 1) {
-            return response('Question already up voted', 200);
+            return response()->json(['message' => 'Question already up voted'], 200);
         }
         else if ($vote_type === -1) {
             $question->votes()->detach($user->id);
@@ -172,16 +197,21 @@ class QuestionController extends Controller
         else {
             $question->votes()->attach($user->id, ['vote_type' => 1]);
         }
-        return response('Question up voted', 200);
+        return response()->json(['message' => 'Question up voted'], 200);
     }
 
     /**
-     * Down vote the specified question.
+     * Down vote the specified question, return 404 HTTP response if the question is not found.
      * @param int $id id of the specified question.
      * @return Response
      */
     public function downVote($id) {
-        $question = Question::findOrFail($id);
+        try {
+            $question = Question::findOrFail($id);
+        }
+        catch (ModelNotFoundException $e) {
+            return response()->json(['error' =>'question not found'], 404);
+        }
         $user = JWTAuth::parseToken()->authenticate();
         $vote_type = $question->votes()->select('vote_type')->where('id', $user->id)->get()->first();
         $vote_type = $vote_type['vote_type'];
@@ -189,12 +219,12 @@ class QuestionController extends Controller
             $question->votes()->detach($user->id);
         }
         else if ($vote_type === -1) {
-            return response('Question already down voted', 200);
+            return response()->json(['message' => 'Question already down voted'], 200);
         }
         else {
             $question->votes()->attach($user->id, ['vote_type' => -1]);
         }
-        return response('Question down voted', 200);
+        return response()->json(['message'=>'Question down voted'], 200);
     }
 
     /**

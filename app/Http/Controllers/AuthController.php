@@ -58,26 +58,25 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => 'The email address you specified is already in use.'], 500);
         }
-        return response("User successfully registered",200);
+        return response()->json(['message' => 'User successfully registered'],200);
     }
 
     /**
      * Get the current authenticated user information.
      * @return Response
      */
-    public function userInfo()
+    public function userInfo(Request $request)
     {
-        $user = JWTAuth::parseToken()->authenticate();
-
-        // If the token is invalid
-        if (! $user) {
-            return response()->json(['invalid user'], 401);
+        if (JWTAuth::getToken())
+        {
+            $user = JWTAuth::parseToken()->authenticate();
+            return response()->json([
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email
+            ]);
+        } else {
+            return response()->json(['error' =>'invalid user'], 401);
         }
-
-        return response()->json([
-            'id' => $user->id,
-            'name' => $user->name,
-            'email' => $user->email
-        ]);
     }
 }

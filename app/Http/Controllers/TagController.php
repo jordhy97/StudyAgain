@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 class TagController extends Controller
 {
     /**
-     * Return all tags from highest count to lowest.
+     * Return all tags or tags that matched the given search query (if there is a query) from highest count to lowest.
      * @return Response
      */
     public function index(Request $request)

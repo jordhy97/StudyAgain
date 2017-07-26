@@ -21,7 +21,7 @@ This application is built with Laravel 5.4 (back-end) and AngularJS (front-end).
     - [x] Create models' controller.
     - [x] Set API routes.
     - [x] Create database seeder.
-    - [ ] Create unit tests.
+    - [x] Create unit tests.
     
  - Front-end:
     - [x] Create main page. 
