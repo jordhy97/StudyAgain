@@ -50,7 +50,6 @@
                     vm.loading = false;
                 }
             }).catch(function(response) {
-                $state.go('404Error', {});
             });
 
         };
