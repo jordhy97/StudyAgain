@@ -12,7 +12,20 @@ This application is built with Laravel 5.4 (back-end) and AngularJS (front-end).
 4. Authorized users can ask, edit, or delete questions.
 5. Authorized users can answers questions and edit or delete answers.
 6. Authorized users can vote (vote up or vote down) questions and answers.
- 
+
+## How to Run
+
+Initial setup:
+1. Clone this repository (`git clone https://github.com/jordhy97/StudyAgain.git`).
+2. Install [composer](https://getcomposer.org/) and [php](http://php.net/) (php >= 5.6.4)
+3. `composer install`  
+4. `cp .env.example .env`  
+5. `php artisan key:generate`  
+6. `php artisan migrate` (have to create the database first, database config is in .env)
+7. `php artisan db:seed` (optional)
+
+Run the application with `php artisan serve` and open the link provided.
+
 ## To Do List
 
 - Back-end:
