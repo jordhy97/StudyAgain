@@ -13,6 +13,9 @@ This application is built with Laravel 5.4 (back-end) and AngularJS (front-end).
 5. Authorized users can answers questions and edit or delete answers.
 6. Authorized users can vote (vote up or vote down) questions and answers.
 
+## Demo
+http://studyagain.herokuapp.com
+
 ## How to Run
 
 Initial setup:
